@@ -1,0 +1,28 @@
+package main
+
+import (
+	"crypto/sha1"
+	"encoding/hex"
+	"fmt"
+	"os"
+)
+
+func main() {
+	if len(os.Args) == 1 {
+		println("Uso ./hash.exe ApiName")
+		os.Exit(1)
+	}
+
+	fmt.Println(hash(os.Args[1]))
+}
+
+func hash(f string) string {
+	s := []byte(f)
+	key := []byte{0xde, 0xad, 0xbe, 0xef}
+	for i := 0; i < len(s); i++ {
+		s[i] ^= key[i%len(key)]
+	}
+	sha := sha1.New()
+	sha.Write(s)
+	return hex.EncodeToString(sha.Sum(nil))[:16]
+}
